@@ -1,0 +1,26 @@
+{
+    "MAP_TILES": {
+        "OpenStreetMap": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "S1 2021": "https://earthengine.googleapis.com/v1/projects/earthengine-legacy/maps/91bdf182fb76dfc16a23a1addc758dee-59389ba3733c4b835d420cb6a17906cf/tiles/{z}/{x}/{y}",
+        "S2 2021 RGB": "https://earthengine.googleapis.com/v1/projects/earthengine-legacy/maps/57f2f52d1cb8bc1c3f4640a6aec81c85-3cb26669585ccc19dd5d9166e6b5541e/tiles/{z}/{x}/{y}",
+        "VIIRS 2021": "https://earthengine.googleapis.com/v1/projects/earthengine-legacy/maps/d0f97205c93eeb5e12e341dc97351a29-a5799175512f417a309e59f01cf372ee/tiles/{z}/{x}/{y}",
+        "Census 1000 2021": "https://earthengine.googleapis.com/v1/projects/earthengine-legacy/maps/9c0fb97c38d190d7f17d5f0cb48dad3a-e725b269bda5c2e27bbf812771d6fece/tiles/{z}/{x}/{y}",
+        "Census 500 2021": "https://earthengine.googleapis.com/v1/projects/earthengine-legacy/maps/03ed57dd4a7cd516918c6504363039aa-535e2cab29358f3426b3bdbc503e4b7e/tiles/{z}/{x}/{y}",
+        "Census 250 2021": "https://earthengine.googleapis.com/v1/projects/earthengine-legacy/maps/f52ccfed06983698fb83c98e4b77a7f0-7a0373357165029bbadf27e077526456/tiles/{z}/{x}/{y}",
+        "Census 100 2021": "https://earthengine.googleapis.com/v1/projects/earthengine-legacy/maps/4f8e02edb5d7b4ecec3dea56124d0643-f36d66629cbcf5bfa0ffada2be53fbdb/tiles/{z}/{x}/{y}"
+    },
+    "ZOOM_LEVELS": {
+        "Zoom 5 (1000m)": 5,
+        "Zoom 8 (500m)": 8,
+        "Zoom 12 (100m)": 12,
+        "Zoom 15 (30m)": 15,
+        "Zoom 18 (10m)": 18
+    },
+    "LOCATIONS": {
+        "Kaunas": [54.8985, 23.9036],
+        "Vilnius": [54.6872, 25.2797],
+        "Klaipėda": [55.7033, 21.1443],
+        "Šiauliai": [55.9333, 23.3167],
+        "Panevėžys": [55.7333, 24.35]
+    }
+}

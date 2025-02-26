@@ -1,0 +1,6 @@
+*__pycache__*
+*cache*
+*downloads*
+_tmp/
+graphviz
+data_explorer/private-key.json
