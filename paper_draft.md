@@ -16,12 +16,63 @@ Then how do i check the accuracy of my results - how i will compare my results w
 This should be sufficient for methodology. Add pipeline image
 Also loss functions ...
 
-2.1. Data collection and sources
-2.2. Population census aggregation
-2.3. Data transformations and preprocessing
-2.4. Train test split
-2.5. Loss functions and Use of U-Nets and CNNs
-2.6. Comparison methodology
+### 2.1. Data collection and sources
+
+The data used in this paper for creating and comparing gridded population maps (GPMs) is summarized in Table 1.
+
+| Definition | Purpose | Resolution | Source | Original source | Date of access |
+|------------|---------|------------|--------|-----------------|----------------|
+| 2021 Population Census of Lithuania. A 1km grid for the entire country and 500m, 250m, 100m grids for larger towns | Label used for creating ML models | from 100m to 1km | State Data Agency of Lithuania | State Data Agency of Lithuania | 2024-10-06 |
+| Sentinel-1 radar data. VV and VH bands for year 2021 (from 2021-01-01 to 2022-01-01) | Feature used for creating ML models | 10m | Google earth engine | Copernicus mission | 2024-10-06 |
+| Sentinel-2 multispectral data. 12 different bands ranging from 443.9nm to 2185.7nm for the summer of year 2021 (from 2021-05-01 to 2021-09-01) | Feature used for creating ML models | from 10m to 60m | Google earth engine | Copernicus mission | 2024-10-06 |
+| Night light data from VIIRS satellite. Average radiance band for January of year 2021 | Feature used for creating ML models | 464m | Google earth engine | NASA/NOAA | 2024-10-06 |
+| WorldPop GPM for year 2021 | GPM compared with our models | 93m | Google earth engine | WorldPop research group | 2025-03-06 |
+| Global Human Settlement Layer GPM for year 2021 | GPM compared with our models | 100m | Google earth engine | Global Human Settlement Layer project | 2025-03-06 |
+
+*Table 1: Summary of data used. This table describes what data is used (Definition), what it is used for (Purpose), the resolution data is available in (Resolution), source from where data was taken (Source), who is the owner of the data (Original source) and date when the data was accessed (Date of access).*
+
+The population census data of Lithuania with various resolutions was aggregated and integrated with Google earth engine for more consistent and stable workflow.
+
+### 2.2. Population census aggregation
+
+As mentioned in the previous section the population census data of Lithuania was aggregated together to have a single census GPM of mixed resolutions.
+The aggregation process was as follows:
+--- AI generated ---
+1. We subtracted 100m polygons (both area and population) from 250m polygons, creating differential polygons.
+2. The resulting dataset (100m polygons + recalculated 250m differential polygons) was subtracted from 500m polygons.
+3. This combined result was then subtracted from 1km polygons.
+
+The final result is a single GPM with mixed resolutions ranging from 100m to 1000m, preserving the highest resolution data where available.
++++ AI generated +++
+
+After aggregation we integrated the resulting data set with Google earth engine. Via Google earth engine we transformed this data set to raster data.
+
+### 2.3. Data transformations and preprocessing
+
+Each data set mentioned in Table 1 where preprocessed similarly:
+1. At first we filter data by date ranges we are interested. (Shown in Table 1 definition column)
+2. Then for Sentinel-2 and Night light data we removed cloudy pixels.
+3. After that we calculated mean of all available images over filtered date ranges for each data set.
+4. To ensure consistency between all data sets we reprojected each of them to EPSG:3346 (Projected coordinate system for Lithuania).
+5. Finally we saved the resulting data sets (their bands) as bitmaps of areas 500m x 500m at 10m for ~100 towns where highest census resolution where available.
+
+After getting the bitmaps, we additionally removed outlier pixels from the data sets by setting extreme values to the minimum or maximum thresholds.
+Then we standardized each data set. Its also worth mentioning that we also tried log transform before standardizing on population and night light data, because the following data sets had log distributions.
+
+### 2.4. Train test split
+
+After preparing our data we splitted it to train and test sets, for model training and evaluation. The data was split spatially to ensure independent training and testing areas. Region between latitudes 23.4664
+and 24.2794 were designated as the test set, while all other area was training set.
+* Training Set: Included 86 cities, such as Vilnius, the largest city in Lithuania.
+* Testing Set: Included 22 cities, such as Kaunas, the second-largest city.
+
+### 2.5. Loss functions and Use of U-Nets and CNNs
+
+For training we tried MSE loss function and some custom loss functions derived from it. For calculating MSE loss we simply took the difference of census population and predicted population bitmaps.
+For custom loss function we grouped census population pixels based on population ranges and calculated MSE values for each range, then took a mean of these MSE
+
+
+### 2.6. Comparison methodology
 
 3. Experiments
 
