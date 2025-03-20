@@ -8,13 +8,13 @@ Shortly talk about U-Nets and CNNs
 1.2. Existing gridded population maps
 1.3. Use of U-Nets and CNNs in gridded population maps
 
-2. Methodology
+## 2. Methodology
 
-Write about data sources, collection and preprocessing, how i aggregate census data, covert it to raster image via gee transform to EPSG:3346 etc. etc.
-Then write about what models i will use (CNN and U-Net)
-Then how do i check the accuracy of my results - how i will compare my results with other models (Try finding default comparison metric for grided pop maps (as of now every article uses something different :( )))
-This should be sufficient for methodology. Add pipeline image
-Also loss functions ...
+This chapter outlines the methodology used in creation of girded population map model. A quick summary of the methodology is shown in Image 1. More detailed explanation of methodology is described in the following chapters.
+
+![](./images/pipeline_export.svg)
+
+*Image 1: Illustration of methodology. This image shows the sources and flow of data used in this paper. First census data is taken from state data agency, then it's aggregated into a single data set, then it's uploaded to GEE, after this features and labels are retrieved from GEE passed to ML model and finally predictions are made.*
 
 ### 2.1. Data collection and sources
 
@@ -36,21 +36,22 @@ The population census data of Lithuania with various resolutions was aggregated 
 ### 2.2. Population census aggregation
 
 As mentioned in the previous section the population census data of Lithuania was aggregated together to have a single census GPM of mixed resolutions.
+Population census data was available as set of polygons and population living in each polygon, so the aggregation process was designed accordingly.
+
 The aggregation process was as follows:
---- AI generated ---
-1. We subtracted 100m polygons (both area and population) from 250m polygons, creating differential polygons.
-2. The resulting dataset (100m polygons + recalculated 250m differential polygons) was subtracted from 500m polygons.
-3. This combined result was then subtracted from 1km polygons.
+1. 100m polygons where subtracted (both area and population) from 250m polygons, creating differential polygons of data missing from 100m polygons.
+2. Differential polygons and 100m polygons where combined to create more complete dataset.
+3. This process was repeated with 500m and 1km resolution data to create a full dataset of best available resolution.
 
 The final result is a single GPM with mixed resolutions ranging from 100m to 1000m, preserving the highest resolution data where available.
-+++ AI generated +++
 
-After aggregation we integrated the resulting data set with Google earth engine. Via Google earth engine we transformed this data set to raster data.
+After aggregation dataset was integrated with Google earth engine. Via Google earth engine dataset was transformed to raster data.
 
 ### 2.3. Data transformations and preprocessing
 
+.................
 Each data set mentioned in Table 1 where preprocessed similarly:
-1. At first we filter data by date ranges we are interested. (Shown in Table 1 definition column)
+1. At first data was filtered by date ranges we are interested. (Shown in Table 1 definition column)
 2. Then for Sentinel-2 and Night light data we removed cloudy pixels.
 3. After that we calculated mean of all available images over filtered date ranges for each data set.
 4. To ensure consistency between all data sets we reprojected each of them to EPSG:3346 (Projected coordinate system for Lithuania).
@@ -70,11 +71,15 @@ and 24.2794 were designated as the test set, while all other area was training s
 
 For training we tried MSE loss function and some custom loss functions derived from it. For calculating MSE loss we simply took the difference of census population and predicted population bitmaps.
 For custom loss function we grouped census population pixels based on population ranges and calculated MSE values for each range, then took a mean of these MSE
+Add use of U-Nets and CNNs
 
 
 ### 2.6. Comparison methodology
 
-3. Experiments
+For evaluating created models and comparing them with existing models MAE and MAPE metric will be used at different population ranges. Different population ranges are used because population data has logarithmic distribution, for example in population range from 1 to 5, MAE of 50 would be quite large (prediction was 55 when actual value was 5), but in range from 100 to 500, MAE of 50 is negligible (prediction was 550 when actual value was 500), similar logic can be applied to MAPE. In range from 100 to 500 MAPE of 200% would be quite large (prediction was 1000 when actual value was 500), but in range 1 to 5 MAE of 200% would be negligible (prediction was 10 when actual value was 5).
+As a result of this logic MAE is useful for evaluating low population and MAPE for evaluating high population.
+
+## 3. Experiments
 
 describe different CNN, U-Net configurations i tired what was the output of these experiments
 
