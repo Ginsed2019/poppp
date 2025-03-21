@@ -12,7 +12,7 @@ Shortly talk about U-Nets and CNNs
 
 This chapter outlines the methodology used in creation of girded population map model. A quick summary of the methodology is shown in Image 1. More detailed explanation of methodology is described in the following chapters.
 
-![](./images/pipeline_export.svg)
+![](./images/pipeline_export.svg?)
 
 *Image 1: Illustration of methodology. This image shows the sources and flow of data used in this paper. First census data is taken from state data agency, then it's aggregated into a single data set, then it's uploaded to GEE, after this features and labels are retrieved from GEE passed to ML model and finally predictions are made.*
 
