@@ -49,30 +49,29 @@ After aggregation dataset was integrated with Google earth engine. Via Google ea
 
 ### 2.3. Data transformations and preprocessing
 
-.................
 Each data set mentioned in Table 1 where preprocessed similarly:
-1. At first data was filtered by date ranges we are interested. (Shown in Table 1 definition column)
-2. Then for Sentinel-2 and Night light data we removed cloudy pixels.
-3. After that we calculated mean of all available images over filtered date ranges for each data set.
-4. To ensure consistency between all data sets we reprojected each of them to EPSG:3346 (Projected coordinate system for Lithuania).
-5. Finally we saved the resulting data sets (their bands) as bitmaps of areas 500m x 500m at 10m for ~100 towns where highest census resolution where available.
+1. At first datasets where filtered by date ranges specified in Table 1, to get only 2021 data.
+2. Then for Sentinel-2 and Night light data cloudy pixels where removed.
+3. After that, mean of all available images over filtered date ranges was calculated for each data set.
+4. To ensure consistency between all data sets, they where reprojected to EPSG:3346 (Projected coordinate system for Lithuania).
+5. Finally the resulting data sets (their bands) where saved as bitmaps of areas 5000m x 5000m at 10m resolution for ~100 towns where highest census resolution was available.
 
-After getting the bitmaps, we additionally removed outlier pixels from the data sets by setting extreme values to the minimum or maximum thresholds.
-Then we standardized each data set. Its also worth mentioning that we also tried log transform before standardizing on population and night light data, because the following data sets had log distributions.
+After getting the bitmaps, outlier pixels where additionally removed from the data sets by setting extreme values to the minimum and maximum thresholds respectively.
+Then each dataset was standardized. Its also worth mentioning that log transform was used before standardizing on population and night light data, because the following data sets had log distributions.
 
 ### 2.4. Train test split
 
-After preparing our data we splitted it to train and test sets, for model training and evaluation. The data was split spatially to ensure independent training and testing areas. Region between latitudes 23.4664
+After preparing datasets, they where splitted to train and test sets, for model training and evaluation. The data was split spatially to ensure independent training and testing areas. Region between latitudes 23.4664
 and 24.2794 were designated as the test set, while all other area was training set.
 * Training Set: Included 86 cities, such as Vilnius, the largest city in Lithuania.
 * Testing Set: Included 22 cities, such as Kaunas, the second-largest city.
 
 ### 2.5. Loss functions and Use of U-Nets and CNNs
 
-For training we tried MSE loss function and some custom loss functions derived from it. For calculating MSE loss we simply took the difference of census population and predicted population bitmaps.
-For custom loss function we grouped census population pixels based on population ranges and calculated MSE values for each range, then took a mean of these MSE
-Add use of U-Nets and CNNs
-
+For model creation, U-Net and CNN models where selected, due to their simplicity and ability to capture large receptive fields. To find the best model many different configurations where tried, the configurations for both U-Nets and CNNs where designed to test how models performance depends on the size of receptive field, on the number of filters in layers and on the number of layers. This was done to find best smallest model for gridded population map production.
+Additional experiments with different loss functions where performed to find the optimal one. For training MSE loss function and some custom loss functions derived from it where tried. For calculating MSE loss the difference of census population and predicted population bitmaps was taken.
+For custom loss function census population pixels where grouped based on population ranges and calculated MSE values for each range, then the mean of these MSE was taken.
+Appart from MSE loss MAPE and SMAPE loss was tried do to its better ability to capture errors when data has a large range of values.
 
 ### 2.6. Comparison methodology
 
